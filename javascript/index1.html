@@ -34,6 +34,27 @@
 	return this.object;
   };
   
+    var Robot = function(position) {
+    //A Robot is a game object
+	//It's default position is the origin
+	position = position || {x:0, y:0, z:0};
+	this.type = 'Robot';
+	
+	//This creates the blue circle
+	this.geometry = new THREE.SphereGeometry(45, 20, 20);
+	this.material = new THREE.MeshLambertMaterial({color: 0x0000ff});
+	this.object = new THREE.Mesh(this.geometry, this.material);
+	
+	//This changes it to the correct position
+	this.object.position = position;
+	
+	    console.log("Robot at:");
+	    console.log(this.object.position);
+	
+	return this.object;
+  };
+  
+  
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
 	
@@ -46,13 +67,15 @@
 	
 	//THIS IS WHERE THE PROBLEM IS.
 	var objects = new Array();
-	objects.push(new Wall({x:0, y:0, z:0}));
+	objects.push(new Wall({x:0, y:100, z:0}));
 	objects.push(new Wall({x:100, y:0, z:0}));
 	objects.push(new Wall({x:100, y:100, z:0}));
 	
 	for(var i = 0; i<objects.length; i++) {
 	  scene.add(objects[i]);
 	};
+	
+	scene.add(new Robot({x:0, y:0, z:0}));
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
