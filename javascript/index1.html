@@ -19,7 +19,13 @@
   //This creates the keyboard
   var keyboard = new THREEx.KeyboardState();
   
+  //these booleans keep track of whether a key is pressed
+  var wPres = false;
+  var aPres = false;
+  var sPres = false;
+  var dPres = false;
   
+
   //Name: converter
   //This converts the position on the board to the position in the world
   var converter = function(boardPos) {
@@ -123,18 +129,38 @@
   
   
   Game.prototype.handleInput = function() {
-	if(keyboard.pressed("W")) {
+    //These will move the robot once the moment they are pressed
+	if(keyboard.pressed("W") && wPres == false) {
+	  console.log("w pressed");
 	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y +1});
-	}
-	if(keyboard.pressed("S")) {
+	  wPres = true;
+	};
+	if(keyboard.pressed("S") && sPres == false) {
 	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y -1});
-	}
-	if(keyboard.pressed("A")) {
+	  sPres = true;
+	};
+	if(keyboard.pressed("A") && aPres == false) {
 	  this.robot.updatePos({x: this.robot.position.x -1, y: this.robot.position.y});
-	}
-	if(keyboard.pressed("D")) {
+	  aPres = true;
+	};
+	if(keyboard.pressed("D") && dPres == false) {
 	  this.robot.updatePos({x: this.robot.position.x +1, y: this.robot.position.y});
-	}
+	  dPres = true;
+	};
+	
+	//These will reset the key's states the moment they are released
+	if(!(keyboard.pressed("W")) && wPres == true) {
+	  wPres = false;
+	};
+	if(!(keyboard.pressed("S")) && sPres == true) {
+	  sPres = false;
+	};
+	if(!(keyboard.pressed("A")) && aPres == true) {
+	  aPres = false;
+	};
+	if(!(keyboard.pressed("D")) && dPres == true) {
+	  dPres = false;
+	};
   };
   
   //Name: render
