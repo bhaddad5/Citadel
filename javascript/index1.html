@@ -60,22 +60,29 @@
 	
 	//This creates the camera.  I used your numbers in lieu of better ones.
 	camera = new THREE.PerspectiveCamera(75,4.0/3.0, 1, 10000);
-	camera.position.z = 500;
+	camera.position.z = 1000;
 	
 	//This creates the scene.
 	scene = new THREE.Scene();
 	
-	//THIS IS WHERE THE PROBLEM IS.
+	//This adds the background plane
+	var backGeometry = new THREE.PlaneGeometry(1000, 1000);
+	var backMaterial = new THREE.MeshLambertMaterial();
+	var background = new THREE.Mesh(backGeometry, backMaterial);
+	background.translateZ(-50);
+	scene.add(background);
+	
+	//This adds the objects to the data structure
 	var objects = new Array();
+	objects.push(new Robot({x:0, y:0, z:0}));
 	objects.push(new Wall({x:0, y:100, z:0}));
 	objects.push(new Wall({x:100, y:0, z:0}));
 	objects.push(new Wall({x:100, y:100, z:0}));
 	
+	//This adds the objects to the scene
 	for(var i = 0; i<objects.length; i++) {
 	  scene.add(objects[i]);
 	};
-	
-	scene.add(new Robot({x:0, y:0, z:0}));
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
