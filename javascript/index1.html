@@ -2,13 +2,6 @@
 <html>
   <head>
     <title>Putting in Basics</title>
-    <style>
-     body {
-      margin: 0px;
-      background-color: #fff;
-      overflow: hidden;
-     }
-   </style>
   </head>
   <body>
    <script src="js/three.min.js"></script>
@@ -23,7 +16,6 @@
   var time0 = new Date().getTime();
   
   var Wall = function(position) {
-    ;//var geometry, material, object;
     //A Wall is a game object
 	//It's default position is the origin
 	position = position || {x:0, y:0, z:0};
@@ -31,7 +23,7 @@
 	
 	//This creates the red cube
 	this.geometry = new THREE.CubeGeometry(90, 90, 90);
-	this.material = new THREE.MeshBasicMaterial({color: 0xff0000});
+	this.material = new THREE.MeshLambertMaterial({color: 0xff0000});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
@@ -43,9 +35,7 @@
   };
   
   //This function creates and renders everything. 
-  Game.prototype.initiate = function() {
-    //Initialize variables
-	var myMesh, myCube, myMaterial;
+  Game.prototype.initialize = function() {
 	
 	//This creates the camera.  I used your numbers in lieu of better ones.
 	camera = new THREE.PerspectiveCamera(75,4.0/3.0, 1, 10000);
@@ -53,11 +43,6 @@
 	
 	//This creates the scene.
 	scene = new THREE.Scene();
-	
-	//THIS IS THE ORIGIONAL CUBE
-	myCube = new THREE.CubeGeometry(90, 90, 90);
-	myMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
-	myMesh = new THREE.Mesh(myCube, myMaterial);
 	
 	//THIS IS WHERE THE PROBLEM IS.
 	var objects = new Array();
@@ -70,12 +55,12 @@
 	};
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
-//	light = new THREE.PointLight(0xffffff, 1, 1000);
-//	light.position.set(0, -100, 300);
-//	scene.add(light);
+    this.light = new THREE.PointLight(0xffffff, 1, 1000);
+    this.light.position.set(0, -100, 300);
+    scene.add(this.light);
 	
 	//This creates the renderer.  I used your numbers in lieu of better ones.
-	renderer = new THREE.CanvasRenderer();
+	renderer = new THREE.WebGLRenderer({antialias: true});
 	renderer.setSize(800,600);
 	renderer.setClearColor(0xeeeeee, 1.0);
 	document.body.appendChild(renderer.domElement);
@@ -90,11 +75,8 @@
   };
 
   Game.prototype.animate = function() {
-  
-    var that = this;
-	
-    // note: three.js includes requestAnimationFrame shim
-    requestAnimationFrame( game.animate );
+    //this loops through, animating the scene
+    requestAnimationFrame( game.animate);
 
     var time = new Date().getTime();
     render(time - time0);
@@ -103,7 +85,7 @@
   
   game = new Game();
   
-  game.initiate();
+  game.initialize();
   game.animate();
 
 </script>   
