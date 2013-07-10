@@ -5,6 +5,7 @@
   </head>
   <body>
    <script src="js/three.min.js"></script>
+   <script src='js/THREEx.KeyboardState.js'></script>
    
  <script>
   
@@ -14,6 +15,9 @@
   //This creates some global variables
   var time0 = new Date().getTime();
   var camera, scene, renderer, light;
+  
+  //This creates the keyboard
+  var keyboard = new THREEx.KeyboardState();
   
   
   //Name: converter
@@ -39,9 +43,7 @@
 	//This changes it to the correct position
 	this.object.position = converter(position);
 	
-	    console.log(this.object.position);
-	
-	return this.object;
+	    console.log(position);
   };
     
 	
@@ -50,7 +52,7 @@
   var Robot = function(position) {
     //A Robot is a game object
 	//It's default position is the origin
-	positionB = position || {x:0, y:0};
+	this.position = position || {x:0, y:0};
 	this.type = 'Robot';
 	
 	//This creates the blue circle
@@ -59,20 +61,18 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
-	this.object.position = converter(positionB);
+	this.object.position = converter(this.position);
 	
 	    console.log("Robot at:");
-	    console.log(this.object.position);
-	
-	return this.object;
+	    console.log(this.position);
   };
 
   
   //Name: Robot.prototype.updatePos
   //This updates the Robot's Position
   Robot.prototype.updatePos = function(position) {
-    this.positionB = position;
-	this.object.position = converter(this.positionB);
+    this.position = position;
+	this.object.position = converter(this.position);
   };
   
   
@@ -94,18 +94,20 @@
 	background.translateZ(-50);
 	scene.add(background);
 	
-	//This adds the objects to the data structure
-	var objects = new Array();
-	objects.push(new Robot({x:2, y:0}));
-	objects.push(new Wall({x:0, y:1}));
-	objects.push(new Wall({x:1, y:0,}));
-	objects.push(new Wall({x:1, y:1}));
-	objects.push(new Wall({x:0, y:2}));
+	//This adds the walls to the data structure
+	var walls = new Array();
+	walls.push(new Wall({x:0, y:1}));
+	walls.push(new Wall({x:1, y:0,}));
+	walls.push(new Wall({x:1, y:1}));
+	walls.push(new Wall({x:0, y:2}));
 	
-	//This adds the objects to the scene
-	for(var i = 0; i<objects.length; i++) {
-	  scene.add(objects[i]);
+	//This adds the walls to the scene
+	for(var i = 0; i<walls.length; i++) {
+	  scene.add(walls[i].object);
 	};
+	
+	this.robot = new Robot({x:2, y:0});
+	scene.add(this.robot.object);
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
@@ -119,6 +121,21 @@
 	document.body.appendChild(renderer.domElement);
   };
   
+  
+  Game.prototype.handleInput = function() {
+	if(keyboard.pressed("W")) {
+	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y +1});
+	}
+	if(keyboard.pressed("S")) {
+	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y -1});
+	}
+	if(keyboard.pressed("A")) {
+	  this.robot.updatePos({x: this.robot.position.x -1, y: this.robot.position.y});
+	}
+	if(keyboard.pressed("D")) {
+	  this.robot.updatePos({x: this.robot.position.x +1, y: this.robot.position.y});
+	}
+  };
   
   //Name: render
   //This renders the scene
@@ -134,6 +151,9 @@
   //Name: animate
   //This animates the scene
   Game.prototype.animate = function() {
+    //This tells the game to check the input
+    game.handleInput();
+	
     //this loops through, animating the scene
     requestAnimationFrame( game.animate);
 	
