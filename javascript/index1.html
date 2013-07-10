@@ -35,7 +35,7 @@
   //Name: converter
   //This converts the position on the board to the position in the world
   var converter = function(boardPos) {
-    return {x: boardPos.x * 100 - 400, y: boardPos.y * 100 - 400, z:0};
+    return {x: boardPos.x * 100 - 350, y: boardPos.y * 100 - 350, z:0};
   };
   
   
@@ -138,7 +138,7 @@
 	scene = new THREE.Scene();
 	
 	//This adds the background plane
-	var backGeometry = new THREE.PlaneGeometry(1000, 1000);
+	var backGeometry = new THREE.PlaneGeometry(800, 800);
 	var backMaterial = new THREE.MeshLambertMaterial();
 	var background = new THREE.Mesh(backGeometry, backMaterial);
 	background.translateZ(-50);
@@ -171,7 +171,8 @@
 	document.body.appendChild(renderer.domElement);
   };
   
-  
+  //Name: Game.prototype.handleInput
+  //This checks if the robot can move and does so
   Game.prototype.handleInput = function() {
     //This checks which directions the robot can move
 	this.robot.canMove();
