@@ -15,14 +15,15 @@
    
  <script>
   
-  initiate();
-  animate();
+  var Game = function() {
   
+  };
+
   var camera, scene, renderer, light;
   var time0 = new Date().getTime();
   
   //This function creates and renders everything. 
-  function initiate() {
+  Game.prototype.initiate = function() {
     //Initialize variables
 	var myMesh, myCube, myMaterial;
 	
@@ -61,14 +62,22 @@
     renderer.render(scene, camera);
   };
 
-  function animate() {
+  Game.prototype.animate = function() {
+  
+    var that = this;
+	
     // note: three.js includes requestAnimationFrame shim
-    requestAnimationFrame( animate );
+    requestAnimationFrame( game.animate );
 
     var time = new Date().getTime();
     render(time - time0);
 
-  }
+  };
+  
+  game = new Game();
+  
+  game.initiate();
+  game.animate();
 
 </script>   
    
