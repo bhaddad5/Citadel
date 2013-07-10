@@ -65,9 +65,9 @@
 	objects.push(new Wall({x:100, y:0, z:0}));
 	objects.push(new Wall({x:100, y:100, z:0}));
 	
-	scene.add(objects[0]);
-	scene.add(objects[1]);
-	scene.add(objects[2]);
+	for(var i = 0; i<objects.length; i++) {
+	  scene.add(objects[i]);
+	};
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
 //	light = new THREE.PointLight(0xffffff, 1, 1000);
