@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Putting in Basics</title>
+    <style>
+     body {
+      margin: 0px;
+      background-color: #fff;
+      overflow: hidden;
+     }
+   </style>
+  </head>
+  <body>
+   <script src="js/three.min.js"></script>
+   
+<script>
+
+    var camera, scene, renderer;
+    var geometry, material, mesh;
+	
+	var time0 = new Date().getTime();
+
+    init();
+    animate();
+
+    function init() {
+
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 10000 );
+        camera.position.z = 1000;
+
+        scene = new THREE.Scene();
+
+        geometry = new THREE.CubeGeometry( 90, 90, 90 );
+        material = new THREE.MeshBasicMaterial( { color: 0xff0000} );
+
+        mesh = new THREE.Mesh( geometry, material );
+        scene.add( mesh );
+
+        renderer = new THREE.CanvasRenderer();
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        document.body.appendChild( renderer.domElement );
+
+    }
+	
+	function render(t) {
+      // Bob the camera a bit
+      camera.position.x = Math.sin(t / 1000.0) * 60;
+      camera.position.y = -1000 + Math.sin(t / 700.0) * 40;
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+    };
+
+    function animate() {
+
+      // note: three.js includes requestAnimationFrame shim
+      requestAnimationFrame( animate );
+		
+	  var time = new Date().getTime();
+      render(time - time0);
+
+    }
+
+</script> 
+   
+  </body>
+</html>
