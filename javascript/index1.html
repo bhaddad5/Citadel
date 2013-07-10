@@ -8,17 +8,23 @@
    
  <script>
   
-  var Game = function() {
+  //This is the core of the game.  Bow before its awesome might!
+  var Game = function() {};
   
-  };
-
-  var camera, scene, renderer, light;
+  //This creates some global variables
   var time0 = new Date().getTime();
+  var camera, scene, renderer, light;
+  
+  
+  var converter = function(boardPos) {
+    return {x: boardPos.x * 100, y: boardPos.y * 100, z:0};
+  };
+  
   
   var Wall = function(position) {
     //A Wall is a game object
 	//It's default position is the origin
-	position = position || {x:0, y:0, z:0};
+	position = position || {x:0, y:0};
 	this.type = 'Wall';
 	
 	//This creates the red cube
@@ -27,7 +33,7 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
-	this.object.position = position;
+	this.object.position = converter(position);
 	
 	    console.log(this.object.position);
 	
@@ -37,7 +43,7 @@
     var Robot = function(position) {
     //A Robot is a game object
 	//It's default position is the origin
-	position = position || {x:0, y:0, z:0};
+	position = position || {x:0, y:0};
 	this.type = 'Robot';
 	
 	//This creates the blue circle
@@ -46,7 +52,7 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
-	this.object.position = position;
+	this.object.position = converter(position);
 	
 	    console.log("Robot at:");
 	    console.log(this.object.position);
@@ -57,7 +63,7 @@
   
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
-	
+  
 	//This creates the camera.  I used your numbers in lieu of better ones.
 	camera = new THREE.PerspectiveCamera(75,4.0/3.0, 1, 10000);
 	camera.position.z = 1000;
@@ -74,10 +80,10 @@
 	
 	//This adds the objects to the data structure
 	var objects = new Array();
-	objects.push(new Robot({x:0, y:0, z:0}));
-	objects.push(new Wall({x:0, y:100, z:0}));
-	objects.push(new Wall({x:100, y:0, z:0}));
-	objects.push(new Wall({x:100, y:100, z:0}));
+	objects.push(new Robot({x:2, y:0}));
+	objects.push(new Wall({x:0, y:1}));
+	objects.push(new Wall({x:1, y:0,}));
+	objects.push(new Wall({x:1, y:1}));
 	
 	//This adds the objects to the scene
 	for(var i = 0; i<objects.length; i++) {
