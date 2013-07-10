@@ -16,11 +16,15 @@
   var camera, scene, renderer, light;
   
   
+  //Name: converter
+  //This converts the position on the board to the position in the world
   var converter = function(boardPos) {
-    return {x: boardPos.x * 100, y: boardPos.y * 100, z:0};
+    return {x: boardPos.x * 100 - 400, y: boardPos.y * 100 - 400, z:0};
   };
   
   
+  //Name: Wall
+  //This is a wall the player cannot pass through
   var Wall = function(position) {
     //A Wall is a game object
 	//It's default position is the origin
@@ -39,11 +43,14 @@
 	
 	return this.object;
   };
-  
-    var Robot = function(position) {
+    
+	
+  //Name: Robot
+  //This is the main player Robot
+  var Robot = function(position) {
     //A Robot is a game object
 	//It's default position is the origin
-	position = position || {x:0, y:0};
+	positionB = position || {x:0, y:0};
 	this.type = 'Robot';
 	
 	//This creates the blue circle
@@ -52,15 +59,24 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
-	this.object.position = converter(position);
+	this.object.position = converter(positionB);
 	
 	    console.log("Robot at:");
 	    console.log(this.object.position);
 	
 	return this.object;
   };
+
+  
+  //Name: Robot.prototype.updatePos
+  //This updates the Robot's Position
+  Robot.prototype.updatePos = function(position) {
+    this.positionB = position;
+	this.object.position = converter(this.positionB);
+  };
   
   
+  //Name: Initialize
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
   
@@ -84,6 +100,7 @@
 	objects.push(new Wall({x:0, y:1}));
 	objects.push(new Wall({x:1, y:0,}));
 	objects.push(new Wall({x:1, y:1}));
+	objects.push(new Wall({x:0, y:2}));
 	
 	//This adds the objects to the scene
 	for(var i = 0; i<objects.length; i++) {
@@ -102,6 +119,9 @@
 	document.body.appendChild(renderer.domElement);
   };
   
+  
+  //Name: render
+  //This renders the scene
   function render(t) {
     // Bob the camera a bit
     camera.position.x = Math.sin(t / 1000.0) * 60;
@@ -109,7 +129,10 @@
     camera.lookAt(scene.position);
     renderer.render(scene, camera);
   };
-
+  
+  
+  //Name: animate
+  //This animates the scene
   Game.prototype.animate = function() {
     //this loops through, animating the scene
     requestAnimationFrame( game.animate);
