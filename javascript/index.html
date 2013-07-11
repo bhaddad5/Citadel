@@ -14,7 +14,7 @@
   
   //This creates some global variables
   var time0 = new Date().getTime();
-  var camera, scene, renderer, light;
+  var camera, scene, renderer, light1, light2;
   var shiftsLeft;
   
   //This creates the keyboard
@@ -385,7 +385,7 @@
 	
 	//This adds the skybox
 	var skyGeometry = new THREE.PlaneGeometry(100000, 100000);
-	var skyMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff});
+	var skyMaterial = new THREE.MeshBasicMaterial({color: 0x772222});
 	var skybox = new THREE.Mesh(skyGeometry, skyMaterial);
 	skybox.translateZ(-1500);
 	skybox.rotation.x = 20;
@@ -416,10 +416,15 @@
     showShifts();
 	scene.add(shiftsLeft);
 	
-	//This creates and adds the light.  I used your numbers in lieu of better ones.
-    this.light = new THREE.PointLight(0xffffff, 1, 1000);
-    this.light.position.set(0, -100, 300);
-    scene.add(this.light);
+	//This creates and adds the light
+    this.light1 = new THREE.PointLight(0xffcccc, 1, 1000);
+    this.light1.position.set(500, -50, 300);
+    scene.add(this.light1);
+	
+	//This creates and adds the light
+    this.light2 = new THREE.PointLight(0xffcccc, 1, 1000);
+    this.light2.position.set(-500, -100, 300);
+    scene.add(this.light2);
 	
 	//This creates the renderer.  I used your numbers in lieu of better ones.
 	renderer = new THREE.WebGLRenderer({antialias: true});
