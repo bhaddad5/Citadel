@@ -27,12 +27,20 @@
   var aPres = false;
   var sPres = false;
   var dPres = false;
+  var upPres = false;
+  var downPres = false;
+  var leftPres = false;
+  var rightPres = false;
   
   //These booleans keep track of which directions the robot can move
   var canMoveW = false;
   var canMoveS = false;
   var canMoveA = false;
   var canMoveD = false;
+  var canMoveUp = false;
+  var canMoveDown = false;
+  var canMoveLeft = false;
+  var canMoveRight = false;
   
   //These booleans keep track of whether there are walls around the robot
   var wallTop = false;
@@ -58,10 +66,13 @@
   //Name: Tile
   //This is a base tile on which the walls are set
   var Tile = function(position) {
+    //It's default position is the origin
+    this.position = position || {x:0, y:0};
+	
     this.type = 'Tile';
     
 	//This creates the tile plane
-	this.geometry = new THREE.PlaneGeometry(100, 100);
+	this.geometry = new THREE.PlaneGeometry(110, 110);
 	this.material = new THREE.MeshLambertMaterial({color: 0x00ff00});
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
@@ -69,6 +80,13 @@
 	this.object.position = tileConverter(position);
   }
   
+  
+  //Name: Tile.prototype.updatePos
+  //This updates the Tile's Position
+  Tile.prototype.updateTilePos = function(position) {
+    this.position = position;
+	this.object.position = tileConverter(this.position);
+  };
   
   
   //Name: Wall
@@ -87,8 +105,6 @@
 	//This changes it to the correct position
 	this.object.positionB = position;
 	this.object.position = converter(position);
-	
-	    console.log(this.object.positionB);
   };
     
 	
@@ -107,9 +123,6 @@
 	
 	//This changes it to the correct position
 	this.object.position = converter(this.position);
-	
-	    console.log("Robot at:");
-	    console.log(this.position);
   };
 
   
@@ -209,8 +222,8 @@
 	scene.add(background);
 	
 	//This adds the main tile
-	var tile = new Tile({x:2, y:0});
-	scene.add(tile.object);
+	this.tile = new Tile({x:3, y:0});
+	scene.add(this.tile.object);
 	
 	//This adds the walls to the data structure
 	walls.push(new Wall({x:0, y:1}));
@@ -239,6 +252,7 @@
 	document.body.appendChild(renderer.domElement);
   };
   
+  
   //Name: Game.prototype.handleInput
   //This checks if the robot can move and does so
   Game.prototype.handleInput = function() {
@@ -263,6 +277,24 @@
 	  dPres = true;
 	};
 	
+	//These will move the tile once the moment they are pressed
+	if(keyboard.pressed("up") && upPres == false) {
+	  this.tile.updateTilePos({x: this.tile.position.x, y: this.tile.position.y + 1});
+	  upPres = true;
+	};
+	if(keyboard.pressed("down") && downPres == false) {
+	  this.tile.updateTilePos({x: this.tile.position.x, y: this.tile.position.y - 1});
+	  downPres = true;
+	};
+	if(keyboard.pressed("left") && leftPres == false) {
+	  this.tile.updateTilePos({x: this.tile.position.x - 1, y: this.tile.position.y});
+	  leftPres = true;
+	};
+	if(keyboard.pressed("right") && rightPres == false) {
+	  this.tile.updateTilePos({x: this.tile.position.x + 1, y: this.tile.position.y});
+	  rightPres = true;
+	};
+	
 	//These will reset the key's states the moment they are released
 	if(!(keyboard.pressed("W")) && wPres == true) {
 	  wPres = false;
@@ -276,7 +308,20 @@
 	if(!(keyboard.pressed("D")) && dPres == true) {
 	  dPres = false;
 	};
+	if(!(keyboard.pressed("up")) && upPres == true) {
+	  upPres = false;
+	};
+	if(!(keyboard.pressed("down")) && downPres == true) {
+	  downPres = false;
+	};
+	if(!(keyboard.pressed("left")) && leftPres == true) {
+	  leftPres = false;
+	};
+	if(!(keyboard.pressed("right")) && rightPres == true) {
+	  rightPres = false;
+	};
   };
+  
   
   //Name: render
   //This renders the scene
