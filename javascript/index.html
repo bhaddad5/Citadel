@@ -383,6 +383,14 @@
 	background.translateZ(-50);
 	scene.add(background);
 	
+	//This adds the skybox
+	var skyGeometry = new THREE.PlaneGeometry(100000, 100000);
+	var skyMaterial = new THREE.MeshBasicMaterial({color: 0x0000ff});
+	var skybox = new THREE.Mesh(skyGeometry, skyMaterial);
+	skybox.translateZ(-1500);
+	skybox.rotation.x = 20;
+	scene.add(skybox);
+	
 	//This adds the main tile
 	this.tile = new Tile({x:3, y:0});
 	scene.add(this.tile.object);
