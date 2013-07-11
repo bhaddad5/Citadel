@@ -22,6 +22,9 @@
   //This array holds the walls
   var walls = new Array();
   
+  //This is the total number of shifts allowed
+  var shifts = 5;
+  
   //These booleans keep track of whether a key is pressed
   var wPres = false;
   var aPres = false;
@@ -43,6 +46,8 @@
   var canMoveDown = false;
   var canMoveLeft = false;
   var canMoveRight = false;
+  var canShiftRight = false;
+  var canShiftDown = false;
   
   //These booleans keep track of whether there are walls around the robot
   var wallTop = false;
@@ -160,7 +165,6 @@
 	  };
 	}
   }
-  
   
   //Name: Wall
   //This is a wall the player cannot pass through
@@ -370,6 +374,16 @@
 	
 	//This checks which directions the tile can move
 	this.tile.canMoveTile();
+	
+	//These test whether the walls can shift
+	canShiftRight = false;
+	if(this.tile.position.y != this.robot.position.y && shifts > 0){
+	  canShiftRight = true;
+	}
+	canShiftDown = false;
+	if(this.tile.position.x != this.robot.position.x && shifts > 0){
+	  canShiftDown = true;
+	}
     
     //These will move the robot once the moment they are pressed
 	if(keyboard.pressed("W") && wPres == false && canMoveW == true) {
@@ -411,13 +425,17 @@
 	};
 	
 	//These will shift the rows/columns of walls
-	if(keyboard.pressed("space") && spacePres == false && this.tile.position.y != this.robot.position.y) {
+	if(keyboard.pressed("space") && spacePres == false && canShiftRight == true) {
 	  this.tile.rightShift();
 	  spacePres = true;
+	  shifts = shifts - 1;
+	  console.log(shifts);
 	}
-	if(keyboard.pressed("shift") && shiftPres == false && this.tile.position.x != this.robot.position.x) {
+	if(keyboard.pressed("shift") && shiftPres == false && canShiftDown == true) {
 	  this.tile.downShift();
 	  shiftPres = true;
+	  shifts = shifts - 1;
+	  console.log(shifts);
 	}
 	
 	//These will reset the key's states the moment they are released
