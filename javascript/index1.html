@@ -64,6 +64,12 @@
     return {x: boardPos.x * 100 - 350, y: boardPos.y * 100 - 350, z:0};
   };
   
+  //Name: headConverter
+  //This converts the position on the board to the position in the world
+  var headConverter = function(boardPos) {
+    return {x: boardPos.x * 100 - 350, y: boardPos.y * 100 - 350, z:50};
+  };
+  
   
   //Name: tileConverter
   //This converts the position of the tiles to be correct
@@ -212,12 +218,15 @@
 	this.type = 'Robot';
 	
 	//This creates the blue circle
-	this.geometry = new THREE.SphereGeometry(45, 20, 20);
+	this.geometryBody = new THREE.SphereGeometry(45, 20, 20);
+	this.geometryHead = new THREE.SphereGeometry(30, 20, 20);
 	this.material = new THREE.MeshLambertMaterial({color: 0x0000ff});
-	this.object = new THREE.Mesh(this.geometry, this.material);
+	this.body = new THREE.Mesh(this.geometryBody, this.material);
+	this.head = new THREE.Mesh(this.geometryHead, this.material);
 	
 	//This changes it to the correct position
-	this.object.position = converter(this.position);
+	this.body.position = converter(this.position);
+	this.head.position = headConverter(this.position);
   };
 
   
@@ -225,7 +234,8 @@
   //This updates the Robot's Position
   Robot.prototype.updatePos = function(position) {
     this.position = position;
-	this.object.position = converter(this.position);
+	this.body.position = converter(this.position);
+	this.head.position = headConverter(this.position);
   };
   
   
@@ -390,7 +400,8 @@
 	
 	//This creates and adds the robot
 	this.robot = new Robot({x:0, y:0});
-	scene.add(this.robot.object);
+	scene.add(this.robot.body);
+	scene.add(this.robot.head);
 	
 	//This shows the number of shifts remaining
     showShifts();
