@@ -81,12 +81,48 @@
   }
   
   
-  //Name: Tile.prototype.updatePos
+  //Name: Tile.prototype.updateTilePos
   //This updates the Tile's Position
   Tile.prototype.updateTilePos = function(position) {
     this.position = position;
 	this.object.position = tileConverter(this.position);
   };
+  
+  //Name: Tile.prototype.canMoveTile
+  //This checks if the tile can move up
+  Tile.prototype.canMoveTile = function() {
+	//This checks if the tile can move up
+	if(this.position.y < 7) {
+	  canMoveUp = true;
+	}
+	if(this.position.y >= 7) {
+	  canMoveUp = false;
+	}
+	
+	//This checks if the tile can move down
+	if(this.position.y > 0) {
+	  canMoveDown = true;
+	}
+	if(this.position.y <= 0) {
+	  canMoveDown = false;
+	}
+	
+	//This checks if the tile can move left
+	if(this.position.x > 0) {
+	  canMoveLeft = true;
+	}
+	if(this.position.x <= 0) {
+	  canMoveLeft = false;
+	}
+	
+	//This checks if the tile can move right
+	if(this.position.x < 7) {
+	  canMoveRight = true;
+	}
+	if(this.position.x >= 7) {
+	  canMoveRight = false;
+	}
+  }
   
   
   //Name: Wall
@@ -136,7 +172,7 @@
   
   //Name: Robot.prototype.canMoveW
   //This checks if the robot can move up
-  Robot.prototype.canMove = function() {
+  Robot.prototype.canMoveRobot = function() {
     
 	//This resets the booleans on the surrounding walls so they can be rechecked
 	wallTop = false;
@@ -257,7 +293,10 @@
   //This checks if the robot can move and does so
   Game.prototype.handleInput = function() {
     //This checks which directions the robot can move
-	this.robot.canMove();
+	this.robot.canMoveRobot();
+	
+	//This checks which directions the tile can move
+	this.tile.canMoveTile();
     
     //These will move the robot once the moment they are pressed
 	if(keyboard.pressed("W") && wPres == false && canMoveW == true) {
@@ -278,19 +317,19 @@
 	};
 	
 	//These will move the tile once the moment they are pressed
-	if(keyboard.pressed("up") && upPres == false) {
+	if(keyboard.pressed("up") && upPres == false && canMoveUp == true) {
 	  this.tile.updateTilePos({x: this.tile.position.x, y: this.tile.position.y + 1});
 	  upPres = true;
 	};
-	if(keyboard.pressed("down") && downPres == false) {
+	if(keyboard.pressed("down") && downPres == false && canMoveDown == true) {
 	  this.tile.updateTilePos({x: this.tile.position.x, y: this.tile.position.y - 1});
 	  downPres = true;
 	};
-	if(keyboard.pressed("left") && leftPres == false) {
+	if(keyboard.pressed("left") && leftPres == false && canMoveLeft == true) {
 	  this.tile.updateTilePos({x: this.tile.position.x - 1, y: this.tile.position.y});
 	  leftPres = true;
 	};
-	if(keyboard.pressed("right") && rightPres == false) {
+	if(keyboard.pressed("right") && rightPres == false && canMoveRight == true) {
 	  this.tile.updateTilePos({x: this.tile.position.x + 1, y: this.tile.position.y});
 	  rightPres = true;
 	};
