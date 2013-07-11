@@ -19,7 +19,10 @@
   //This creates the keyboard
   var keyboard = new THREEx.KeyboardState();
   
-  //these booleans keep track of whether a key is pressed
+  //This array holds the walls
+  var walls = new Array();
+  
+  //These booleans keep track of whether a key is pressed
   var wPres = false;
   var aPres = false;
   var sPres = false;
@@ -30,6 +33,12 @@
   var canMoveS = false;
   var canMoveA = false;
   var canMoveD = false;
+  
+  //These booleans keep track of whether there are walls around the robot
+  var wallTop = false;
+  var wallBot = false;
+  var wallLeft = false;
+  var wallRight = false;
   
 
   //Name: converter
@@ -53,9 +62,10 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
+	this.object.positionB = position;
 	this.object.position = converter(position);
 	
-	    console.log(position);
+	    console.log(this.object.positionB);
   };
     
 	
@@ -92,41 +102,72 @@
   //This checks if the robot can move up
   Robot.prototype.canMove = function() {
     
+	//This resets the booleans on the surrounding walls so they can be rechecked
+	wallTop = false;
+	wallBot = false;
+    wallLeft = false;
+    wallRight = false;
+	
+	//Updates which walls are around the robot
+	this.wallCheck(this.position);
+	
 	//This checks if the robot can move up
-	if(this.position.y < 7) {
+	if(this.position.y < 7 && wallTop == false) {
 	  canMoveW = true;
 	}
-	if(this.position.y >= 7) {
+	if(this.position.y >= 7 || wallTop == true) {
 	  canMoveW = false;
 	}
 	
 	//This checks if the robot can move down
-	if(this.position.y > 0) {
+	if(this.position.y > 0 && wallBot == false) {
 	  canMoveS = true;
 	}
-	if(this.position.y <= 0) {
+	if(this.position.y <= 0 || wallBot == true) {
 	  canMoveS = false;
 	}
 	
 	//This checks if the robot can move left
-	if(this.position.x > 0) {
+	if(this.position.x > 0 && wallLeft == false) {
 	  canMoveA = true;
 	}
-	if(this.position.x <= 0) {
+	if(this.position.x <= 0 || wallLeft == true) {
 	  canMoveA = false;
 	}
 	
 	//This checks if the robot can move right
-	if(this.position.x < 7) {
+	if(this.position.x < 7 && wallRight == false) {
 	  canMoveD = true;
 	}
-	if(this.position.x >= 7) {
+	if(this.position.x >= 7 || wallRight == true) {
 	  canMoveD = false;
+	}
+
+  }
+  
+  //Name: wallCheck
+  //This checks which sides of the robot are bordered by walls
+  Robot.prototype.wallCheck = function(position) {
+    for(var i = 0; i<walls.length; i++) {
+	  
+	  if(walls[i].object.positionB.y == position.y + 1 && walls[i].object.positionB.x == position.x){
+	    wallTop = true;
+	  }
+	  if(walls[i].object.positionB.y == position.y - 1 && walls[i].object.positionB.x == position.x){
+	    wallBot = true;
+	  }
+	  if(walls[i].object.positionB.y == position.y && walls[i].object.positionB.x == position.x +1){
+	    wallRight = true;
+	  }
+	  if(walls[i].object.positionB.y == position.y && walls[i].object.positionB.x == position.x - 1){
+	    wallLeft = true;
+	  }
+
 	}
   }
   
   
-  //Name: Initialize
+  //Name: Game.prototype.initialize
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
   
@@ -145,18 +186,18 @@
 	scene.add(background);
 	
 	//This adds the walls to the data structure
-	var walls = new Array();
 	walls.push(new Wall({x:0, y:1}));
-	walls.push(new Wall({x:1, y:0,}));
+	walls.push(new Wall({x:1, y:3,}));
 	walls.push(new Wall({x:1, y:1}));
 	walls.push(new Wall({x:0, y:2}));
+	walls.push(new Wall({x:2, y:1}));
 	
 	//This adds the walls to the scene
 	for(var i = 0; i<walls.length; i++) {
 	  scene.add(walls[i].object);
 	};
 	
-	this.robot = new Robot({x:2, y:0});
+	this.robot = new Robot({x:0, y:0});
 	scene.add(this.robot.object);
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
