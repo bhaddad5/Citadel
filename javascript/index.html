@@ -15,6 +15,7 @@
   //This creates some global variables
   var time0 = new Date().getTime();
   var camera, scene, renderer, light;
+  var shiftsLeft;
   
   //This creates the keyboard
   var keyboard = new THREEx.KeyboardState();
@@ -36,6 +37,7 @@
   var rightPres = false;
   var spacePres = false;
   var shiftPres = false;
+  var tabPres = false;
   
   //These booleans keep track of which directions the robot can move
   var canMoveW = false;
@@ -350,17 +352,16 @@
       var mat = new THREE.MeshBasicMaterial({map: tex});
       mat.transparent = true;
 
-      var titleQuad = new THREE.Mesh(
+      shiftsLeft = new THREE.Mesh(
         new THREE.PlaneGeometry(500, 500),
         mat
       );
-      titleQuad.doubleSided = true;
+      shiftsLeft.doubleSided = true;
 	
-	titleQuad.translateZ(100);
-	titleQuad.translateY((120*shifts) - 300);
-	titleQuad.translateX(700);
+	shiftsLeft.translateZ(100);
+	shiftsLeft.translateY(300);
+	shiftsLeft.translateX(700);
 	  
-	scene.add(titleQuad);
   }
   
   
@@ -405,6 +406,7 @@
 	
 	//This shows the number of shifts remaining
     showShifts();
+	scene.add(shiftsLeft);
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
@@ -484,7 +486,9 @@
 	  spacePres = true;
 	  if(wallShifted == true) {
 	    shifts = shifts - 1;
+		scene.remove(shiftsLeft);
 	    showShifts();
+		scene.add(shiftsLeft);
 	  };
 	}
 	if(keyboard.pressed("shift") && shiftPres == false && canShiftDown == true) {
@@ -492,8 +496,15 @@
 	  shiftPres = true;
 	  if(wallShifted == true) {
 	    shifts = shifts - 1;
+	    scene.remove(shiftsLeft);
 	    showShifts();
+		scene.add(shiftsLeft);
 	  };
+	}
+	
+	//This restarts the game from the beginning
+	if(keyboard.pressed("tab") && tabPres == false) {
+	  tabPres = true;
 	}
 	
 	//These will reset the key's states the moment they are released
@@ -526,6 +537,9 @@
 	};
 	if(!(keyboard.pressed("shift")) && shiftPres == true) {
 	  shiftPres = false;
+	};
+	if(!(keyboard.pressed("tab")) && tabPres == true) {
+	  tabPres = false;
 	};
   };
   
