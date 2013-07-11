@@ -32,6 +32,7 @@
   var leftPres = false;
   var rightPres = false;
   var spacePres = false;
+  var shiftPres = false;
   
   //These booleans keep track of which directions the robot can move
   var canMoveW = false;
@@ -127,7 +128,7 @@
   
   
   //Name: Tile.prototype.rightShift
-  //This updates the Tile's Position
+  //This shifts the walls
   Tile.prototype.rightShift = function() {
     for(var i = 0; i<walls.length; i++) {
 	  if(walls[i].position.y == this.position.y) {
@@ -138,6 +139,23 @@
 		//For the walls that do loop
 		if(walls[i].position.x>7) {
 	      walls[i].updateWallPos({x: 0, y: walls[i].position.y});
+		};
+	  };
+	}
+  }
+  
+  //Name: Tile.prototype.downShift
+  //This shifts the walls
+  Tile.prototype.downShift = function() {
+    for(var i = 0; i<walls.length; i++) {
+	  if(walls[i].position.x == this.position.x) {
+	    //For the walls that don't loop
+		if(walls[i].position.y>=0) {
+	      walls[i].updateWallPos({x: walls[i].position.x, y: walls[i].position.y - 1});
+		};
+		//For the walls that do loop
+		if(walls[i].position.y<0) {
+	      walls[i].updateWallPos({x: walls[i].position.x, y: 7});
 		};
 	  };
 	}
@@ -360,10 +378,14 @@
 	  rightPres = true;
 	};
 	
-	//These will move the robot once the moment they are pressed
+	//These will shift the rows/columns of walls
 	if(keyboard.pressed("space") && spacePres == false && this.tile.position.y != this.robot.position.y) {
 	  this.tile.rightShift();
 	  spacePres = true;
+	}
+	if(keyboard.pressed("shift") && shiftPres == false && this.tile.position.x != this.robot.position.x) {
+	  this.tile.downShift();
+	  shiftPres = true;
 	}
 	
 	//These will reset the key's states the moment they are released
@@ -393,6 +415,9 @@
 	};
 	if(!(keyboard.pressed("space")) && spacePres == true) {
 	  spacePres = false;
+	};
+	if(!(keyboard.pressed("shift")) && shiftPres == true) {
+	  shiftPres = false;
 	};
   };
   
