@@ -129,9 +129,18 @@
   //Name: Tile.prototype.rightShift
   //This updates the Tile's Position
   Tile.prototype.rightShift = function() {
-      
-	//walls[4].updateWallPos({x: walls[4].position.x + 1, y: walls[4].position.y});
-	//console.log(walls[4].position.x);
+    for(var i = 0; i<walls.length; i++) {
+	  if(walls[i].position.y == this.position.y) {
+	    //For the walls that don't loop
+		if(walls[i].position.x<=7) {
+	      walls[i].updateWallPos({x: walls[i].position.x + 1, y: walls[i].position.y});
+		};
+		//For the walls that do loop
+		if(walls[i].position.x>7) {
+	      walls[i].updateWallPos({x: 0, y: walls[i].position.y});
+		};
+	  };
+	}
   }
   
   
