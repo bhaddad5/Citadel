@@ -610,7 +610,7 @@
 		scene.add(shiftsLeft);
 	  };
 	}
-	if(keyboard.pressed("shift") && shiftPres == false && canShiftDown == true) {
+	if(keyboard.pressed("enter") && shiftPres == false && canShiftDown == true) {
 	  this.tile.downShift();
 	  shiftPres = true;
 	  if(wallShifted == true) {
@@ -655,7 +655,7 @@
 	if(!(keyboard.pressed("space")) && spacePres == true) {
 	  spacePres = false;
 	};
-	if(!(keyboard.pressed("shift")) && shiftPres == true) {
+	if(!(keyboard.pressed("enter")) && shiftPres == true) {
 	  shiftPres = false;
 	};
 	if(!(keyboard.pressed("R")) && rPres == true) {
