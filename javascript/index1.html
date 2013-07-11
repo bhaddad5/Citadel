@@ -315,6 +315,36 @@
   }
   
   
+  //Name: showShifts
+  //This shows the number of shifts remaining
+  showShifts = function() {
+    //This adds the text.  I borrowed the template from Imari Heikkinen
+	var c = document.createElement('canvas');
+      c.getContext('2d').font = '50px Arial';
+      c.getContext('2d').fillText(shifts + ' shifts left!', 2, 100);
+
+      var tex = new THREE.Texture(c);
+      tex.needsUpdate = true;
+      
+      var mat = new THREE.MeshBasicMaterial({map: tex});
+      mat.transparent = true;
+
+      var titleQuad = new THREE.Mesh(
+        new THREE.PlaneGeometry(500, 500),
+        mat
+      );
+      titleQuad.doubleSided = true;
+	
+	titleQuad.translateZ(100);
+	titleQuad.translateY((120*shifts) - 300);
+	titleQuad.translateX(600);
+	  
+	scene.add(titleQuad);
+	
+	console.log("going!");
+  }
+  
+  
   //Name: Game.prototype.initialize
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
@@ -353,6 +383,9 @@
 	this.robot = new Robot({x:0, y:0});
 	scene.add(this.robot.object);
 	
+	//This shows the number of shifts remaining
+    showShifts();
+	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
     this.light.position.set(0, -100, 300);
@@ -369,6 +402,7 @@
   //Name: Game.prototype.handleInput
   //This checks if the robot can move and does so
   Game.prototype.handleInput = function() {
+    
     //This checks which directions the robot can move
 	this.robot.canMoveRobot();
 	
@@ -429,13 +463,13 @@
 	  this.tile.rightShift();
 	  spacePres = true;
 	  shifts = shifts - 1;
-	  console.log(shifts);
+	  showShifts();
 	}
 	if(keyboard.pressed("shift") && shiftPres == false && canShiftDown == true) {
 	  this.tile.downShift();
 	  shiftPres = true;
 	  shifts = shifts - 1;
-	  console.log(shifts);
+	  showShifts();
 	}
 	
 	//These will reset the key's states the moment they are released
