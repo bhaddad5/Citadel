@@ -228,10 +228,10 @@
 	this.wallCheck(this.position);
 	
 	//This checks if the robot can move up
-	if(wallTop == false) {
+	if(this.position.y < 8 && wallTop == false) {
 	  canMoveW = true;
 	}
-	if(wallTop == true) {
+	if(this.position.y >= 8 || wallTop == true) {
 	  canMoveW = false;
 	}
 	
@@ -283,6 +283,34 @@
   }
   
   
+  //Name: win
+  //This makes the winning screen appear
+  win = function() {
+    //This adds the text.  I borrowed the template from Imari Heikkinen
+	var c = document.createElement('canvas');
+      c.getContext('2d').font = '50px Arial';
+      c.getContext('2d').fillText('YOU WIN!', 2, 100);
+
+      var tex = new THREE.Texture(c);
+      tex.needsUpdate = true;
+      
+      var mat = new THREE.MeshBasicMaterial({map: tex});
+      mat.transparent = true;
+
+      var titleQuad = new THREE.Mesh(
+        new THREE.PlaneGeometry(1000, 500),
+        mat
+      );
+      titleQuad.doubleSided = true;
+	
+	titleQuad.translateZ(100);
+	titleQuad.translateY(300);
+	titleQuad.translateX(100);
+	  
+	scene.add(titleQuad);
+  }
+  
+  
   //Name: Game.prototype.initialize
   //This function creates and renders everything. 
   Game.prototype.initialize = function() {
@@ -321,30 +349,6 @@
 	this.robot = new Robot({x:0, y:0});
 	scene.add(this.robot.object);
 	
-	//This adds the text.  I borrowed the template from Imari Heikkinen
-	var c = document.createElement('canvas');
-      c.getContext('2d').font = '50px Arial';
-      c.getContext('2d').fillText('YOU WIN!', 2, 100);
-
-      var tex = new THREE.Texture(c);
-      tex.needsUpdate = true;
-      
-      var mat = new THREE.MeshBasicMaterial({map: tex});
-      mat.transparent = true;
-
-      var titleQuad = new THREE.Mesh(
-        new THREE.PlaneGeometry(1000, 500),
-        mat
-      );
-      titleQuad.doubleSided = true;
-	
-	titleQuad.translateZ(100);
-	titleQuad.translateY(300);
-	titleQuad.translateX(100);
-	  
-	scene.add(titleQuad);
-	
-	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
     this.light.position.set(0, -100, 300);
@@ -371,6 +375,9 @@
 	if(keyboard.pressed("W") && wPres == false && canMoveW == true) {
 	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y +1});
 	  wPres = true;
+	  if(this.robot.position.y == 8) {
+	    win();
+	  };
 	};
 	if(keyboard.pressed("S") && sPres == false && canMoveS == true) {
 	  this.robot.updatePos({x: this.robot.position.x, y: this.robot.position.y -1});
