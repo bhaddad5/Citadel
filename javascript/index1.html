@@ -48,6 +48,29 @@
   };
   
   
+  //Name: tileConverter
+  //This converts the position of the tiles to be correct
+  var tileConverter = function(boardPos) {
+    return {x: boardPos.x * 100 - 350, y: boardPos.y * 100 - 350, z:-49};
+  };
+  
+  
+  //Name: Tile
+  //This is a base tile on which the walls are set
+  var Tile = function(position) {
+    this.type = 'Tile';
+    
+	//This creates the tile plane
+	this.geometry = new THREE.PlaneGeometry(100, 100);
+	this.material = new THREE.MeshLambertMaterial({color: 0x00ff00});
+	this.object = new THREE.Mesh(this.geometry, this.material);
+	
+	//This sets the tile's position
+	this.object.position = tileConverter(position);
+  }
+  
+  
+  
   //Name: Wall
   //This is a wall the player cannot pass through
   var Wall = function(position) {
@@ -184,6 +207,10 @@
 	var background = new THREE.Mesh(backGeometry, backMaterial);
 	background.translateZ(-50);
 	scene.add(background);
+	
+	//This adds the main tile
+	var tile = new Tile({x:2, y:0});
+	scene.add(tile.object);
 	
 	//This adds the walls to the data structure
 	walls.push(new Wall({x:0, y:1}));
