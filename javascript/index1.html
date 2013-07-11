@@ -55,6 +55,8 @@
   var wallLeft = false;
   var wallRight = false;
   
+  //This keeps track of whether a wall was actually shifted
+  wallShifted = false;  
 
   //Name: converter
   //This converts the position on the board to the position in the world
@@ -135,6 +137,9 @@
   //Name: Tile.prototype.rightShift
   //This shifts the walls
   Tile.prototype.rightShift = function() {
+    //This resets the boolean that checks if a wall was shifted
+    wallShifted = false;
+	
     for(var i = 0; i<walls.length; i++) {
 	  if(walls[i].position.y == this.position.y) {
 	    //For the walls that don't loop
@@ -145,6 +150,8 @@
 		if(walls[i].position.x>7) {
 	      walls[i].updateWallPos({x: 0, y: walls[i].position.y});
 		};
+		
+		wallShifted = true;
 	  };
 	}
   }
@@ -152,6 +159,9 @@
   //Name: Tile.prototype.downShift
   //This shifts the walls
   Tile.prototype.downShift = function() {
+    //This resets the boolean that checks if a wall was shifted
+    wallShifted = false;
+	
     for(var i = 0; i<walls.length; i++) {
 	  if(walls[i].position.x == this.position.x) {
 	    //For the walls that don't loop
@@ -162,6 +172,7 @@
 		if(walls[i].position.y<0) {
 	      walls[i].updateWallPos({x: walls[i].position.x, y: 7});
 		};
+		wallShifted = true;
 	  };
 	}
   }
@@ -308,7 +319,7 @@
       titleQuad.doubleSided = true;
 	
 	titleQuad.translateZ(100);
-	titleQuad.translateY(300);
+	titleQuad.translateY(500);
 	titleQuad.translateX(100);
 	  
 	scene.add(titleQuad);
@@ -337,11 +348,9 @@
 	
 	titleQuad.translateZ(100);
 	titleQuad.translateY((120*shifts) - 300);
-	titleQuad.translateX(600);
+	titleQuad.translateX(700);
 	  
 	scene.add(titleQuad);
-	
-	console.log("going!");
   }
   
   
@@ -462,14 +471,18 @@
 	if(keyboard.pressed("space") && spacePres == false && canShiftRight == true) {
 	  this.tile.rightShift();
 	  spacePres = true;
-	  shifts = shifts - 1;
-	  showShifts();
+	  if(wallShifted == true) {
+	    shifts = shifts - 1;
+	    showShifts();
+	  };
 	}
 	if(keyboard.pressed("shift") && shiftPres == false && canShiftDown == true) {
 	  this.tile.downShift();
 	  shiftPres = true;
-	  shifts = shifts - 1;
-	  showShifts();
+	  if(wallShifted == true) {
+	    shifts = shifts - 1;
+	    showShifts();
+	  };
 	}
 	
 	//These will reset the key's states the moment they are released
