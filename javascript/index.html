@@ -15,7 +15,7 @@
   //This creates some global variables
   var time0 = new Date().getTime();
   var camera, scene, renderer, light1, light2;
-  var shiftsLeft;
+  var shiftsLeft, winScreen;
   
   //This creates the keyboard
   var keyboard = new THREEx.KeyboardState();
@@ -37,7 +37,7 @@
   var rightPres = false;
   var spacePres = false;
   var shiftPres = false;
-  var tabPres = false;
+  var rPres = false;
   
   //These booleans keep track of which directions the robot can move
   var canMoveW = false;
@@ -324,17 +324,17 @@
       var mat = new THREE.MeshBasicMaterial({map: tex});
       mat.transparent = true;
 
-      var titleQuad = new THREE.Mesh(
+      winScreen = new THREE.Mesh(
         new THREE.PlaneGeometry(1000, 500),
         mat
       );
-      titleQuad.doubleSided = true;
+      winScreen.doubleSided = true;
 	
-	titleQuad.translateZ(100);
-	titleQuad.translateY(500);
-	titleQuad.translateX(100);
+	winScreen.translateZ(100);
+	winScreen.translateY(500);
+	winScreen.translateX(100);
 	  
-	scene.add(titleQuad);
+	scene.add(winScreen);
   }
   
   
@@ -362,6 +362,51 @@
 	shiftsLeft.translateY(300);
 	shiftsLeft.translateX(700);
 	  
+  }
+  
+  
+  //Name: restart
+  //This restarts the game from the beginning
+  Game.prototype.restart = function() {
+    //This removes all the old stuff
+    scene.remove(this.robot.head);
+	scene.remove(this.robot.body);
+	scene.remove(this.tile.object);
+	for(var i = 0; i<walls.length; i++) {
+	  scene.remove(walls[i].object);
+	}
+	walls = [];
+	scene.remove(shiftsLeft);
+	scene.remove(winScreen);
+	
+	
+	//This puts the original stuff back in
+	shifts = 5;
+	
+	//This adds the main tile
+	this.tile = new Tile({x:3, y:0});
+	scene.add(this.tile.object);
+	
+	//This adds the walls to the data structure
+	walls.push(new Wall({x:0, y:1}));
+	walls.push(new Wall({x:1, y:3,}));
+	walls.push(new Wall({x:1, y:1}));
+	walls.push(new Wall({x:0, y:2}));
+	walls.push(new Wall({x:2, y:1}));
+	
+	//This adds the walls to the scene
+	for(var i = 0; i<walls.length; i++) {
+	  scene.add(walls[i].object);
+	};
+	
+	//This creates and adds the robot
+	this.robot = new Robot({x:0, y:0});
+	scene.add(this.robot.body);
+	scene.add(this.robot.head);
+	
+	//This shows the number of shifts remaining
+    showShifts();
+	scene.add(shiftsLeft);
   }
   
   
@@ -516,8 +561,9 @@
 	}
 	
 	//This restarts the game from the beginning
-	if(keyboard.pressed("tab") && tabPres == false) {
-	  tabPres = true;
+	if(keyboard.pressed("R") && rPres == false) {
+	  this.restart();
+	  rPres = true;
 	}
 	
 	//These will reset the key's states the moment they are released
@@ -551,8 +597,8 @@
 	if(!(keyboard.pressed("shift")) && shiftPres == true) {
 	  shiftPres = false;
 	};
-	if(!(keyboard.pressed("tab")) && tabPres == true) {
-	  tabPres = false;
+	if(!(keyboard.pressed("R")) && rPres == true) {
+	  rPres = false;
 	};
   };
   
@@ -589,8 +635,8 @@
 
 </script> 
 
-<p>WASD to move robot, Arrow Keys to move tile, "Space" to shift tile's column right, 
-   "Shift" to shift tile's row down.</p>
+<p>Use WASD to move robot, Arrow Keys to move tile, "Space" to shift tile's column right, 
+   "Shift" to shift tile's row down, and R to restart.</p>
 <p>Reach the top to win!</p>
    
   </body>
