@@ -228,10 +228,10 @@
 	this.wallCheck(this.position);
 	
 	//This checks if the robot can move up
-	if(this.position.y < 7 && wallTop == false) {
+	if(wallTop == false) {
 	  canMoveW = true;
 	}
-	if(this.position.y >= 7 || wallTop == true) {
+	if(wallTop == true) {
 	  canMoveW = false;
 	}
 	
@@ -317,8 +317,33 @@
 	  scene.add(walls[i].object);
 	};
 	
+	//This creates and adds the robot
 	this.robot = new Robot({x:0, y:0});
 	scene.add(this.robot.object);
+	
+	//This adds the text.  I borrowed the template from Imari Heikkinen
+	var c = document.createElement('canvas');
+      c.getContext('2d').font = '50px Arial';
+      c.getContext('2d').fillText('YOU WIN!', 2, 100);
+
+      var tex = new THREE.Texture(c);
+      tex.needsUpdate = true;
+      
+      var mat = new THREE.MeshBasicMaterial({map: tex});
+      mat.transparent = true;
+
+      var titleQuad = new THREE.Mesh(
+        new THREE.PlaneGeometry(1000, 500),
+        mat
+      );
+      titleQuad.doubleSided = true;
+	
+	titleQuad.translateZ(100);
+	titleQuad.translateY(300);
+	titleQuad.translateX(100);
+	  
+	scene.add(titleQuad);
+	
 	
 	//This creates and adds the light.  I used your numbers in lieu of better ones.
     this.light = new THREE.PointLight(0xffffff, 1, 1000);
