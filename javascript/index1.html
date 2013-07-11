@@ -31,6 +31,7 @@
   var downPres = false;
   var leftPres = false;
   var rightPres = false;
+  var spacePres = false;
   
   //These booleans keep track of which directions the robot can move
   var canMoveW = false;
@@ -125,12 +126,21 @@
   }
   
   
+  //Name: Tile.prototype.rightShift
+  //This updates the Tile's Position
+  Tile.prototype.rightShift = function() {
+      
+	//walls[4].updateWallPos({x: walls[4].position.x + 1, y: walls[4].position.y});
+	//console.log(walls[4].position.x);
+  }
+  
+  
   //Name: Wall
   //This is a wall the player cannot pass through
   var Wall = function(position) {
     //A Wall is a game object
 	//It's default position is the origin
-	position = position || {x:0, y:0};
+	this.position = position || {x:0, y:0};
 	this.type = 'Wall';
 	
 	//This creates the red cube
@@ -139,8 +149,15 @@
 	this.object = new THREE.Mesh(this.geometry, this.material);
 	
 	//This changes it to the correct position
-	this.object.positionB = position;
-	this.object.position = converter(position);
+	this.object.position = converter(this.position);
+  };
+  
+  
+  //Name: Wall.prototype.updatePos
+  //This updates the Wall's Position
+  Wall.prototype.updateWallPos = function(position) {
+    this.position = position;
+	this.object.position = converter(this.position);
   };
     
 	
@@ -222,16 +239,16 @@
   Robot.prototype.wallCheck = function(position) {
     for(var i = 0; i<walls.length; i++) {
 	  
-	  if(walls[i].object.positionB.y == position.y + 1 && walls[i].object.positionB.x == position.x){
+	  if(walls[i].position.y == position.y + 1 && walls[i].position.x == position.x){
 	    wallTop = true;
 	  }
-	  if(walls[i].object.positionB.y == position.y - 1 && walls[i].object.positionB.x == position.x){
+	  if(walls[i].position.y == position.y - 1 && walls[i].position.x == position.x){
 	    wallBot = true;
 	  }
-	  if(walls[i].object.positionB.y == position.y && walls[i].object.positionB.x == position.x +1){
+	  if(walls[i].position.y == position.y && walls[i].position.x == position.x +1){
 	    wallRight = true;
 	  }
-	  if(walls[i].object.positionB.y == position.y && walls[i].object.positionB.x == position.x - 1){
+	  if(walls[i].position.y == position.y && walls[i].position.x == position.x - 1){
 	    wallLeft = true;
 	  }
 
@@ -334,6 +351,12 @@
 	  rightPres = true;
 	};
 	
+	//These will move the robot once the moment they are pressed
+	if(keyboard.pressed("space") && spacePres == false && this.tile.position.y != this.robot.position.y) {
+	  this.tile.rightShift();
+	  spacePres = true;
+	}
+	
 	//These will reset the key's states the moment they are released
 	if(!(keyboard.pressed("W")) && wPres == true) {
 	  wPres = false;
@@ -358,6 +381,9 @@
 	};
 	if(!(keyboard.pressed("right")) && rightPres == true) {
 	  rightPres = false;
+	};
+	if(!(keyboard.pressed("space")) && spacePres == true) {
+	  spacePres = false;
 	};
   };
   
